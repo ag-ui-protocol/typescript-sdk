@@ -1,1 +1,1 @@
-export { withDefaultApplyEvents } from "./default";
+export { defaultApplyEvents } from "./default";

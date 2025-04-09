@@ -26,211 +26,211 @@ interface PredictStateValue {
   tool_argument: string;
 }
 
-export const withDefaultApplyEvents =
-  (initialState: AgentState): ApplyEvents =>
-  (events$: Observable<BaseEvent>) => {
-    let messages = structuredClone_(initialState.messages);
-    let state = structuredClone_(initialState.state);
-    let predictState: PredictStateValue[] | undefined;
+export const defaultApplyEvents = (...args: Parameters<ApplyEvents>): ReturnType<ApplyEvents> => {
+  const [input, events$] = args;
 
-    // Helper function to emit state updates with proper cloning
-    const emitUpdate = (agentState: AgentState) => [structuredClone_(agentState)];
+  let messages = structuredClone_(input.messages);
+  let state = structuredClone_(input.state);
+  let predictState: PredictStateValue[] | undefined;
 
-    const emitNoUpdate = () => [];
+  // Helper function to emit state updates with proper cloning
+  const emitUpdate = (agentState: AgentState) => [structuredClone_(agentState)];
 
-    return events$.pipe(
-      mergeMap((event) => {
-        switch (event.type) {
-          case EventType.TEXT_MESSAGE_START: {
-            const { messageId, role } = event as TextMessageStartEvent;
+  const emitNoUpdate = () => [];
 
-            // Create a new message using properties from the event
-            const newMessage: Message = {
-              id: messageId,
-              role: role,
-              content: "",
+  return events$.pipe(
+    mergeMap((event) => {
+      switch (event.type) {
+        case EventType.TEXT_MESSAGE_START: {
+          const { messageId, role } = event as TextMessageStartEvent;
+
+          // Create a new message using properties from the event
+          const newMessage: Message = {
+            id: messageId,
+            role: role,
+            content: "",
+          };
+
+          // Add the new message to the messages array
+          messages.push(newMessage);
+
+          return emitUpdate({ messages });
+        }
+
+        case EventType.TEXT_MESSAGE_CONTENT: {
+          const { delta } = event as TextMessageContentEvent;
+
+          // Get the last message and append the content
+          const lastMessage = messages[messages.length - 1];
+          lastMessage.content = lastMessage.content! + delta;
+
+          return emitUpdate({ messages });
+        }
+
+        case EventType.TEXT_MESSAGE_END: {
+          return emitNoUpdate();
+        }
+
+        case EventType.TOOL_CALL_START: {
+          const { toolCallId, toolCallName, parentMessageId } = event as ToolCallStartEvent;
+
+          let targetMessage: AssistantMessage;
+
+          // Use last message if parentMessageId exists, we have messages, and the parentMessageId matches the last message's id
+          if (
+            parentMessageId &&
+            messages.length > 0 &&
+            messages[messages.length - 1].id === parentMessageId
+          ) {
+            targetMessage = messages[messages.length - 1];
+          } else {
+            // Create a new message otherwise
+            targetMessage = {
+              id: parentMessageId || toolCallId,
+              role: "assistant",
+              toolCalls: [],
             };
-
-            // Add the new message to the messages array
-            messages.push(newMessage);
-
-            return emitUpdate({ messages });
+            messages.push(targetMessage);
           }
 
-          case EventType.TEXT_MESSAGE_CONTENT: {
-            const { delta } = event as TextMessageContentEvent;
+          targetMessage.toolCalls ??= [];
 
-            // Get the last message and append the content
-            const lastMessage = messages[messages.length - 1];
-            lastMessage.content = lastMessage.content! + delta;
+          // Add the new tool call
+          targetMessage.toolCalls.push({
+            id: toolCallId,
+            type: "function",
+            function: {
+              name: toolCallName,
+              arguments: "",
+            },
+          });
 
-            return emitUpdate({ messages });
-          }
+          return emitUpdate({ messages });
+        }
 
-          case EventType.TEXT_MESSAGE_END: {
-            return emitNoUpdate();
-          }
+        case EventType.TOOL_CALL_ARGS: {
+          const { delta } = event as ToolCallArgsEvent;
 
-          case EventType.TOOL_CALL_START: {
-            const { toolCallId, toolCallName, parentMessageId } = event as ToolCallStartEvent;
+          // Get the last message
+          const lastMessage = messages[messages.length - 1];
 
-            let targetMessage: AssistantMessage;
+          // Get the last tool call
+          const lastToolCall = lastMessage.toolCalls[lastMessage.toolCalls.length - 1];
 
-            // Use last message if parentMessageId exists, we have messages, and the parentMessageId matches the last message's id
-            if (
-              parentMessageId &&
-              messages.length > 0 &&
-              messages[messages.length - 1].id === parentMessageId
-            ) {
-              targetMessage = messages[messages.length - 1];
-            } else {
-              // Create a new message otherwise
-              targetMessage = {
-                id: parentMessageId || toolCallId,
-                role: "assistant",
-                toolCalls: [],
-              };
-              messages.push(targetMessage);
+          // Append the arguments
+          lastToolCall.function.arguments += delta;
+
+          if (predictState) {
+            const config = predictState.find((p) => p.tool === lastToolCall.function.name);
+            if (config) {
+              try {
+                const lastToolCallArguments = JSON.parse(
+                  untruncateJson(lastToolCall.function.arguments),
+                );
+                if (config.tool_argument && config.tool_argument in lastToolCallArguments) {
+                  state = {
+                    ...state,
+                    [config.state_key]: lastToolCallArguments[config.tool_argument],
+                  };
+                  return emitUpdate({ messages, state });
+                } else {
+                  state = {
+                    ...state,
+                    [config.state_key]: lastToolCallArguments,
+                  };
+                  return emitUpdate({ messages, state });
+                }
+              } catch (_) {}
             }
-
-            targetMessage.toolCalls ??= [];
-
-            // Add the new tool call
-            targetMessage.toolCalls.push({
-              id: toolCallId,
-              type: "function",
-              function: {
-                name: toolCallName,
-                arguments: "",
-              },
-            });
-
-            return emitUpdate({ messages });
           }
 
-          case EventType.TOOL_CALL_ARGS: {
-            const { delta } = event as ToolCallArgsEvent;
+          return emitUpdate({ messages });
+        }
 
-            // Get the last message
-            const lastMessage = messages[messages.length - 1];
+        case EventType.TOOL_CALL_END: {
+          return emitNoUpdate();
+        }
 
-            // Get the last tool call
-            const lastToolCall = lastMessage.toolCalls[lastMessage.toolCalls.length - 1];
+        case EventType.STATE_SNAPSHOT: {
+          const { snapshot } = event as StateSnapshotEvent;
 
-            // Append the arguments
-            lastToolCall.function.arguments += delta;
+          // Replace state with the literal snapshot
+          state = snapshot;
 
-            if (predictState) {
-              const config = predictState.find((p) => p.tool === lastToolCall.function.name);
-              if (config) {
-                try {
-                  const lastToolCallArguments = JSON.parse(
-                    untruncateJson(lastToolCall.function.arguments),
-                  );
-                  if (config.tool_argument && config.tool_argument in lastToolCallArguments) {
-                    state = {
-                      ...state,
-                      [config.state_key]: lastToolCallArguments[config.tool_argument],
-                    };
-                    return emitUpdate({ messages, state });
-                  } else {
-                    state = {
-                      ...state,
-                      [config.state_key]: lastToolCallArguments,
-                    };
-                    return emitUpdate({ messages, state });
-                  }
-                } catch (_) {}
-              }
-            }
+          return emitUpdate({ state });
+        }
 
-            return emitUpdate({ messages });
-          }
+        case EventType.STATE_DELTA: {
+          const { delta } = event as StateDeltaEvent;
 
-          case EventType.TOOL_CALL_END: {
-            return emitNoUpdate();
-          }
-
-          case EventType.STATE_SNAPSHOT: {
-            const { snapshot } = event as StateSnapshotEvent;
-
-            // Replace state with the literal snapshot
-            state = snapshot;
-
+          try {
+            // Apply the JSON Patch operations to the current state without mutating the original
+            const result = applyPatch(state, delta, true, false);
+            state = result.newDocument;
             return emitUpdate({ state });
-          }
-
-          case EventType.STATE_DELTA: {
-            const { delta } = event as StateDeltaEvent;
-
-            try {
-              // Apply the JSON Patch operations to the current state without mutating the original
-              const result = applyPatch(state, delta, true, false);
-              state = result.newDocument;
-              return emitUpdate({ state });
-            } catch (error: unknown) {
-              const errorMessage = error instanceof Error ? error.message : String(error);
-              console.warn(
-                `Failed to apply state patch:\n` +
-                  `Current state: ${JSON.stringify(state, null, 2)}\n` +
-                  `Patch operations: ${JSON.stringify(delta, null, 2)}\n` +
-                  `Error: ${errorMessage}`,
-              );
-              return emitNoUpdate();
-            }
-          }
-
-          case EventType.MESSAGES_SNAPSHOT: {
-            const { messages: newMessages } = event as MessagesSnapshotEvent;
-
-            // Replace messages with the snapshot
-            messages = newMessages;
-
-            return emitUpdate({ messages });
-          }
-
-          case EventType.RAW: {
-            return emitNoUpdate();
-          }
-
-          case EventType.CUSTOM: {
-            const customEvent = event as CustomEvent;
-
-            if (customEvent.name === "PredictState") {
-              predictState = customEvent.value as PredictStateValue[];
-              return emitNoUpdate();
-            }
-
-            return emitNoUpdate();
-          }
-
-          case EventType.RUN_STARTED: {
-            return emitNoUpdate();
-          }
-
-          case EventType.RUN_FINISHED: {
-            return emitNoUpdate();
-          }
-
-          case EventType.RUN_ERROR: {
-            return emitNoUpdate();
-          }
-
-          case EventType.STEP_STARTED: {
-            return emitNoUpdate();
-          }
-
-          case EventType.STEP_FINISHED: {
-            // reset predictive state after step is finished
-            predictState = undefined;
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            console.warn(
+              `Failed to apply state patch:\n` +
+                `Current state: ${JSON.stringify(state, null, 2)}\n` +
+                `Patch operations: ${JSON.stringify(delta, null, 2)}\n` +
+                `Error: ${errorMessage}`,
+            );
             return emitNoUpdate();
           }
         }
 
-        // This makes TypeScript check that the switch is exhaustive
-        // If a new EventType is added, this will cause a compile error
-        const _exhaustiveCheck: never = event.type;
-        return emitNoUpdate();
-      }),
-    );
-  };
+        case EventType.MESSAGES_SNAPSHOT: {
+          const { messages: newMessages } = event as MessagesSnapshotEvent;
+
+          // Replace messages with the snapshot
+          messages = newMessages;
+
+          return emitUpdate({ messages });
+        }
+
+        case EventType.RAW: {
+          return emitNoUpdate();
+        }
+
+        case EventType.CUSTOM: {
+          const customEvent = event as CustomEvent;
+
+          if (customEvent.name === "PredictState") {
+            predictState = customEvent.value as PredictStateValue[];
+            return emitNoUpdate();
+          }
+
+          return emitNoUpdate();
+        }
+
+        case EventType.RUN_STARTED: {
+          return emitNoUpdate();
+        }
+
+        case EventType.RUN_FINISHED: {
+          return emitNoUpdate();
+        }
+
+        case EventType.RUN_ERROR: {
+          return emitNoUpdate();
+        }
+
+        case EventType.STEP_STARTED: {
+          return emitNoUpdate();
+        }
+
+        case EventType.STEP_FINISHED: {
+          // reset predictive state after step is finished
+          predictState = undefined;
+          return emitNoUpdate();
+        }
+      }
+
+      // This makes TypeScript check that the switch is exhaustive
+      // If a new EventType is added, this will cause a compile error
+      const _exhaustiveCheck: never = event.type;
+      return emitNoUpdate();
+    }),
+  );
+};

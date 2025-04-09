@@ -1,4 +1,4 @@
-import { withDefaultApplyEvents } from "@/apply/default";
+import { defaultApplyEvents } from "@/apply/default";
 import { Message, State, RunAgentInput, RunAgent, ApplyEvents } from "@agentwire/core";
 
 import { AgentConfig, RunAgentParameters } from "./types";
@@ -10,19 +10,17 @@ import { throwError, pipe, Observable } from "rxjs";
 import { verifyEvents } from "@/verify";
 import { convertToLegacyEvents } from "@/legacy/convert";
 import { LegacyRuntimeProtocolEvent } from "@/legacy/types";
+import { lastValueFrom, of } from "rxjs";
 
 export abstract class AbstractAgent {
-  public runAgent(parameters?: RunAgentParameters) {
+  public async runAgent(parameters?: RunAgentParameters): Promise<void> {
     this.agentId = this.agentId ?? uuidv4();
     const input = this.prepareRunAgentInput(parameters);
 
-    const run = this.run(input);
-    const apply = this.apply(input);
-
-    return pipe(
-      run,
+    const pipeline = pipe(
+      () => this.run(input),
       verifyEvents,
-      apply,
+      (source$) => this.apply(input, source$),
       catchError((error) => {
         this.onError(error);
         return throwError(() => error);
@@ -31,6 +29,8 @@ export abstract class AbstractAgent {
         this.onFinalize();
       }),
     );
+
+    return lastValueFrom(pipeline(of(null))).then(() => {});
   }
 
   public legacy_to_be_removed_runAgentBridged(
@@ -39,13 +39,10 @@ export abstract class AbstractAgent {
     this.agentId = this.agentId ?? uuidv4();
     const input = this.prepareRunAgentInput(config);
 
-    const run = this.run(input);
-    const convert = convertToLegacyEvents(this.threadId, input.runId, this.agentId);
-
-    return new Observable<LegacyRuntimeProtocolEvent>((subscriber) => {
-      const source$ = run();
-      return source$.pipe(verifyEvents, convert).subscribe(subscriber);
-    });
+    return this.run(input).pipe(
+      verifyEvents,
+      convertToLegacyEvents(this.threadId, input.runId, this.agentId),
+    );
   }
 
   public abortRun() {}
@@ -64,13 +61,10 @@ export abstract class AbstractAgent {
     this.state = structuredClone_(initialState ?? {});
   }
 
-  protected abstract run(input: RunAgentInput): RunAgent;
+  protected abstract run(...args: Parameters<RunAgent>): ReturnType<RunAgent>;
 
-  protected apply(input: RunAgentInput): ApplyEvents {
-    return withDefaultApplyEvents({
-      messages: input.messages,
-      state: input.state,
-    });
+  protected apply(...args: Parameters<ApplyEvents>): ReturnType<ApplyEvents> {
+    return defaultApplyEvents(...args);
   }
 
   protected prepareRunAgentInput(parameters?: RunAgentParameters): RunAgentInput {

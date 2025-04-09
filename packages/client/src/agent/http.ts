@@ -1,9 +1,10 @@
 import { AbstractAgent } from "./agent";
 import { runHttpRequest, HttpEvent } from "@/run/http-request";
 import { HttpAgentConfig, RunAgentParameters } from "./types";
-import { RunAgent, RunAgentInput } from "@agentwire/core";
+import { RunAgent, RunAgentInput, BaseEvent } from "@agentwire/core";
 import { structuredClone_ } from "@/utils";
 import { transformHttpEventStream } from "@/transform/http";
+import { Observable } from "rxjs";
 
 interface RunHttpAgentConfig extends RunAgentParameters {
   abortController?: AbortController;
@@ -49,7 +50,7 @@ export class HttpAgent extends AbstractAgent {
     this.headers = structuredClone_(config.headers ?? {});
   }
 
-  run(input: RunAgentInput): RunAgent {
-    return () => runHttpRequest(this.url, this.requestInit(input)).pipe(transformHttpEventStream);
+  run(input: RunAgentInput): Observable<BaseEvent> {
+    return runHttpRequest(this.url, this.requestInit(input)).pipe(transformHttpEventStream);
   }
 }
