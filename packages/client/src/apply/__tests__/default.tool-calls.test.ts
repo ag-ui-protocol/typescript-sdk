@@ -10,7 +10,7 @@ import {
   ToolCallArgsEvent,
   ToolCallEndEvent,
 } from "@agentwire/core";
-import { withDefaultApplyEvents } from "../default";
+import { defaultApplyEvents } from "../default";
 
 describe("defaultApplyEvents with tool calls", () => {
   it("should handle a single tool call correctly", async () => {
@@ -22,8 +22,7 @@ describe("defaultApplyEvents with tool calls", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));
@@ -100,8 +99,7 @@ describe("defaultApplyEvents with tool calls", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));
@@ -195,8 +193,7 @@ describe("defaultApplyEvents with tool calls", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));
@@ -251,8 +248,7 @@ describe("defaultApplyEvents with tool calls", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));
@@ -305,8 +301,7 @@ describe("defaultApplyEvents with tool calls", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));

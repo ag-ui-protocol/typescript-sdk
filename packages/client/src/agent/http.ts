@@ -51,6 +51,7 @@ export class HttpAgent extends AbstractAgent {
   }
 
   run(input: RunAgentInput): Observable<BaseEvent> {
-    return runHttpRequest(this.url, this.requestInit(input)).pipe(transformHttpEventStream);
+    const httpEvents = runHttpRequest(this.url, this.requestInit(input));
+    return transformHttpEventStream(httpEvents);
   }
 }

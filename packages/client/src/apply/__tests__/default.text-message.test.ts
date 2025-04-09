@@ -10,7 +10,7 @@ import {
   TextMessageContentEvent,
   TextMessageEndEvent,
 } from "@agentwire/core";
-import { withDefaultApplyEvents } from "../default";
+import { defaultApplyEvents } from "../default";
 
 describe("defaultApplyEvents with text messages", () => {
   it("should handle text message events correctly", async () => {
@@ -22,8 +22,7 @@ describe("defaultApplyEvents with text messages", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));
@@ -92,8 +91,7 @@ describe("defaultApplyEvents with text messages", () => {
     };
 
     // Create the observable stream
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     // Collect all emitted state updates in an array
     const stateUpdatesPromise = firstValueFrom(result$.pipe(toArray()));

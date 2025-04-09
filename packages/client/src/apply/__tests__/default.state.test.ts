@@ -1,4 +1,4 @@
-import { withDefaultApplyEvents } from "../default";
+import { defaultApplyEvents } from "../default";
 import { EventType, StateDeltaEvent, AgentState } from "@agentwire/core";
 import { of } from "rxjs";
 
@@ -21,8 +21,7 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     result$.subscribe((update: AgentState) => {
       expect(update.state).toEqual({
@@ -52,8 +51,7 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     result$.subscribe((update: AgentState) => {
       expect(update.state).toEqual({
@@ -85,8 +83,7 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     result$.subscribe((update: AgentState) => {
       expect(update.state).toEqual({
@@ -116,8 +113,7 @@ describe("defaultApplyEvents - State Patching", () => {
     ];
 
     const events$ = of(...stateDeltas);
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     let updateCount = 0;
     result$.subscribe((update: AgentState) => {
@@ -151,8 +147,7 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const applyEvents = withDefaultApplyEvents(initialState);
-    const result$ = applyEvents(events$);
+    const result$ = defaultApplyEvents(initialState, events$);
 
     let updateCount = 0;
     result$.subscribe({
