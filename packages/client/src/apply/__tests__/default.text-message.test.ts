@@ -9,6 +9,7 @@ import {
   TextMessageStartEvent,
   TextMessageContentEvent,
   TextMessageEndEvent,
+  RunAgentInput,
 } from "@agentwire/core";
 import { defaultApplyEvents } from "../default";
 
@@ -16,9 +17,13 @@ describe("defaultApplyEvents with text messages", () => {
   it("should handle text message events correctly", async () => {
     // Create a subject and state for events
     const events$ = new Subject<BaseEvent>();
-    const initialState: AgentState = {
+    const initialState: RunAgentInput = {
       messages: [],
       state: {},
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     // Create the observable stream
@@ -66,17 +71,17 @@ describe("defaultApplyEvents with text messages", () => {
     expect(stateUpdates.length).toBe(3);
 
     // First update: empty message added
-    expect(stateUpdates[0].messages.length).toBe(1);
-    expect(stateUpdates[0].messages[0].id).toBe("msg1");
-    expect(stateUpdates[0].messages[0].content).toBe("");
+    expect(stateUpdates[0]?.messages?.length).toBe(1);
+    expect(stateUpdates[0]?.messages?.[0]?.id).toBe("msg1");
+    expect(stateUpdates[0]?.messages?.[0]?.content).toBe("");
 
     // Second update: first content chunk added
-    expect(stateUpdates[1].messages.length).toBe(1);
-    expect(stateUpdates[1].messages[0].content).toBe("Hello ");
+    expect(stateUpdates[1]?.messages?.length).toBe(1);
+    expect(stateUpdates[1]?.messages?.[0]?.content).toBe("Hello ");
 
     // Third update: second content chunk appended
-    expect(stateUpdates[2].messages.length).toBe(1);
-    expect(stateUpdates[2].messages[0].content).toBe("Hello world!");
+    expect(stateUpdates[2]?.messages?.length).toBe(1);
+    expect(stateUpdates[2]?.messages?.[0]?.content).toBe("Hello world!");
 
     // Verify the last update came from TEXT_MESSAGE_CONTENT, not TEXT_MESSAGE_END
     expect(stateUpdates.length).toBe(3);
@@ -85,9 +90,13 @@ describe("defaultApplyEvents with text messages", () => {
   it("should handle multiple text messages correctly", async () => {
     // Create a subject and state for events
     const events$ = new Subject<BaseEvent>();
-    const initialState: AgentState = {
+    const initialState: RunAgentInput = {
       messages: [],
       state: {},
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     // Create the observable stream
@@ -123,7 +132,7 @@ describe("defaultApplyEvents with text messages", () => {
       type: EventType.TEXT_MESSAGE_START,
       messageId: "msg2",
       role: "user",
-    } as TextMessageStartEvent);
+    } as unknown as TextMessageStartEvent);
     events$.next({
       type: EventType.TEXT_MESSAGE_CONTENT,
       messageId: "msg2",
@@ -152,27 +161,27 @@ describe("defaultApplyEvents with text messages", () => {
     expect(stateUpdates.length).toBe(4);
 
     // First update: first empty message added
-    expect(stateUpdates[0].messages.length).toBe(1);
-    expect(stateUpdates[0].messages[0].id).toBe("msg1");
-    expect(stateUpdates[0].messages[0].role).toBe("assistant");
-    expect(stateUpdates[0].messages[0].content).toBe("");
+    expect(stateUpdates[0]?.messages?.length).toBe(1);
+    expect(stateUpdates[0]?.messages?.[0]?.id).toBe("msg1");
+    expect(stateUpdates[0]?.messages?.[0]?.role).toBe("assistant");
+    expect(stateUpdates[0]?.messages?.[0]?.content).toBe("");
 
     // Second update: first message content added
-    expect(stateUpdates[1].messages.length).toBe(1);
-    expect(stateUpdates[1].messages[0].content).toBe("First message");
+    expect(stateUpdates[1]?.messages?.length).toBe(1);
+    expect(stateUpdates[1]?.messages?.[0]?.content).toBe("First message");
 
     // Third update: second empty message added
-    expect(stateUpdates[2].messages.length).toBe(2);
-    expect(stateUpdates[2].messages[0].id).toBe("msg1");
-    expect(stateUpdates[2].messages[0].content).toBe("First message");
-    expect(stateUpdates[2].messages[1].id).toBe("msg2");
-    expect(stateUpdates[2].messages[1].role).toBe("user");
-    expect(stateUpdates[2].messages[1].content).toBe("");
+    expect(stateUpdates[2]?.messages?.length).toBe(2);
+    expect(stateUpdates[2]?.messages?.[0]?.id).toBe("msg1");
+    expect(stateUpdates[2]?.messages?.[0]?.content).toBe("First message");
+    expect(stateUpdates[2]?.messages?.[1]?.id).toBe("msg2");
+    expect(stateUpdates[2]?.messages?.[1]?.role).toBe("user");
+    expect(stateUpdates[2]?.messages?.[1]?.content).toBe("");
 
     // Fourth update: second message content added
-    expect(stateUpdates[3].messages.length).toBe(2);
-    expect(stateUpdates[3].messages[0].content).toBe("First message");
-    expect(stateUpdates[3].messages[1].content).toBe("Second message");
+    expect(stateUpdates[3]?.messages?.length).toBe(2);
+    expect(stateUpdates[3]?.messages?.[0]?.content).toBe("First message");
+    expect(stateUpdates[3]?.messages?.[1]?.content).toBe("Second message");
 
     // Verify no additional updates after either TEXT_MESSAGE_END
     expect(stateUpdates.length).toBe(4);

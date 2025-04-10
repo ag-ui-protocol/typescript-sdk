@@ -2,14 +2,35 @@ import { defaultApplyEvents } from "../default";
 import { EventType, StateDeltaEvent, AgentState } from "@agentwire/core";
 import { of } from "rxjs";
 
+// Define the exact type expected by defaultApplyEvents
+interface RunAgentInput {
+  threadId: string;
+  runId: string;
+  messages: {
+    id: string;
+    role: "developer" | "system" | "assistant" | "user";
+    content?: string;
+    name?: string;
+    toolCalls?: any[];
+  }[];
+  tools: any[];
+  context: any[];
+  state?: any;
+  forwardedProps?: any;
+}
+
 describe("defaultApplyEvents - State Patching", () => {
   it("should apply state delta patch correctly", (done) => {
-    const initialState: AgentState = {
+    const initialState = {
       messages: [],
       state: {
         count: 0,
         text: "hello",
       },
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     const stateDelta: StateDeltaEvent = {
@@ -21,6 +42,7 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
+
     const result$ = defaultApplyEvents(initialState, events$);
 
     result$.subscribe((update: AgentState) => {
@@ -33,7 +55,7 @@ describe("defaultApplyEvents - State Patching", () => {
   });
 
   it("should handle nested state updates", (done) => {
-    const initialState: AgentState = {
+    const initialState = {
       messages: [],
       state: {
         user: {
@@ -43,6 +65,10 @@ describe("defaultApplyEvents - State Patching", () => {
           },
         },
       },
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     const stateDelta: StateDeltaEvent = {
@@ -51,7 +77,8 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const result$ = defaultApplyEvents(initialState, events$);
+    // Cast to any to bypass strict type checking
+    const result$ = defaultApplyEvents(initialState as any, events$);
 
     result$.subscribe((update: AgentState) => {
       expect(update.state).toEqual({
@@ -67,11 +94,15 @@ describe("defaultApplyEvents - State Patching", () => {
   });
 
   it("should handle array updates", (done) => {
-    const initialState: AgentState = {
+    const initialState = {
       messages: [],
       state: {
         items: ["a", "b", "c"],
       },
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     const stateDelta: StateDeltaEvent = {
@@ -83,7 +114,8 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const result$ = defaultApplyEvents(initialState, events$);
+    // Cast to any to bypass strict type checking
+    const result$ = defaultApplyEvents(initialState as any, events$);
 
     result$.subscribe((update: AgentState) => {
       expect(update.state).toEqual({
@@ -94,11 +126,15 @@ describe("defaultApplyEvents - State Patching", () => {
   });
 
   it("should handle multiple patches in sequence", (done) => {
-    const initialState: AgentState = {
+    const initialState = {
       messages: [],
       state: {
         counter: 0,
       },
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     const stateDeltas: StateDeltaEvent[] = [
@@ -113,7 +149,8 @@ describe("defaultApplyEvents - State Patching", () => {
     ];
 
     const events$ = of(...stateDeltas);
-    const result$ = defaultApplyEvents(initialState, events$);
+    // Cast to any to bypass strict type checking
+    const result$ = defaultApplyEvents(initialState as any, events$);
 
     let updateCount = 0;
     result$.subscribe((update: AgentState) => {
@@ -132,12 +169,16 @@ describe("defaultApplyEvents - State Patching", () => {
     const originalWarn = console.warn;
     console.warn = jest.fn();
 
-    const initialState: AgentState = {
+    const initialState = {
       messages: [],
       state: {
         count: 0,
         text: "hello",
       },
+      threadId: "test-thread",
+      runId: "test-run",
+      tools: [],
+      context: [],
     };
 
     // Invalid patch: trying to replace a non-existent path
@@ -147,7 +188,8 @@ describe("defaultApplyEvents - State Patching", () => {
     };
 
     const events$ = of(stateDelta);
-    const result$ = defaultApplyEvents(initialState, events$);
+    // Cast to any to bypass strict type checking
+    const result$ = defaultApplyEvents(initialState as any, events$);
 
     let updateCount = 0;
     result$.subscribe({
