@@ -1,9 +1,4 @@
-import {
-  EventType,
-  ToolCallStartEvent,
-  ToolCallArgsEvent,
-  ToolCallEndEvent,
-} from "@agentwire/core";
+import { EventType, ToolCallStartEvent, ToolCallArgsEvent, ToolCallEndEvent } from "@ag-ui/core";
 import { expect, describe, it } from "@jest/globals";
 import { encode, decode } from "../src/proto";
 import { expectRoundTripEquality } from "./test-utils";

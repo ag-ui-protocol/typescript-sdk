@@ -1,8 +1,8 @@
 import { transformHttpEventStream } from "../http";
 import { HttpEvent, HttpEventType } from "../../run/http-request";
 import { parseProtoStream } from "../proto";
-import * as proto from "@agentwire/proto";
-import { BaseEvent, EventType } from "@agentwire/core";
+import * as proto from "@ag-ui/proto";
+import { BaseEvent, EventType } from "@ag-ui/core";
 import { Subject, of, throwError } from "rxjs";
 
 // Mock dependencies
@@ -37,7 +37,7 @@ describe("transformHttpEventStream", () => {
     mockHttpSource.next({
       type: HttpEventType.HEADERS,
       status: 200,
-      headers: new Headers([["content-type", proto.AGENTWIRE_MEDIA_TYPE]]),
+      headers: new Headers([["content-type", proto.AGUI_MEDIA_TYPE]]),
     });
 
     // Send a DATA event
@@ -80,7 +80,7 @@ describe("transformHttpEventStream", () => {
     mockHttpSource.next({
       type: HttpEventType.HEADERS,
       status: 200,
-      headers: new Headers([["content-type", proto.AGENTWIRE_MEDIA_TYPE]]),
+      headers: new Headers([["content-type", proto.AGUI_MEDIA_TYPE]]),
     });
   });
 

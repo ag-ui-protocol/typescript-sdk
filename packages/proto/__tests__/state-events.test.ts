@@ -1,8 +1,4 @@
-import {
-  EventType,
-  StateSnapshotEvent,
-  StateDeltaEvent,
-} from "@agentwire/core";
+import { EventType, StateSnapshotEvent, StateDeltaEvent } from "@ag-ui/core";
 import { expect, describe, it } from "@jest/globals";
 import { encode, decode } from "../src/proto";
 import { expectRoundTripEquality } from "./test-utils";

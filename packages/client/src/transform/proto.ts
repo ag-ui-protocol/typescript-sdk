@@ -1,7 +1,7 @@
 import { Observable, Subject } from "rxjs";
 import { HttpEvent, HttpEventType } from "../run/http-request";
-import { BaseEvent } from "@agentwire/core";
-import * as proto from "@agentwire/proto";
+import { BaseEvent } from "@ag-ui/core";
+import * as proto from "@ag-ui/proto";
 
 /**
  * Parses a stream of HTTP events into a stream of BaseEvent objects using Protocol Buffer format.

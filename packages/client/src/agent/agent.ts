@@ -1,5 +1,5 @@
 import { defaultApplyEvents } from "@/apply/default";
-import { Message, State, RunAgentInput, RunAgent, ApplyEvents } from "@agentwire/core";
+import { Message, State, RunAgentInput, RunAgent, ApplyEvents } from "@ag-ui/core";
 
 import { AgentConfig, RunAgentParameters } from "./types";
 import { v4 as uuidv4 } from "uuid";

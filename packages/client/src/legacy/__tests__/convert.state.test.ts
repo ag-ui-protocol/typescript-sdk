@@ -8,7 +8,7 @@ import {
   ToolCallArgsEvent,
   ToolCallEndEvent,
   CustomEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { LegacyRuntimeProtocolEvent } from "../types";
 
 describe("convertToLegacyEvents - State Management", () => {

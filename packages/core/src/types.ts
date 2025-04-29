@@ -99,7 +99,7 @@ export type RunAgentInput = z.infer<typeof RunAgentInputSchema>;
 export type State = z.infer<typeof StateSchema>;
 export type Role = z.infer<typeof RoleSchema>;
 
-export class AgentWireError extends Error {
+export class AGUIError extends Error {
   constructor(message: string) {
     super(message);
   }

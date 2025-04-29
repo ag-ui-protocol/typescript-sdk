@@ -1,2 +1,2 @@
 export * from "./encoder";
-export { AGENTWIRE_MEDIA_TYPE } from "@agentwire/proto";
+export { AGUI_MEDIA_TYPE } from "@ag-ui/proto";

@@ -25,13 +25,13 @@ importers:
 
   packages/client:
     dependencies:
-      "@agentwire/core":
+      "@ag-ui/core":
         specifier: workspace:*
         version: link:../core
-      "@agentwire/encoder":
+      "@ag-ui/encoder":
         specifier: workspace:*
         version: link:../encoder
-      "@agentwire/proto":
+      "@ag-ui/proto":
         specifier: workspace:*
         version: link:../proto
       "@types/uuid":
@@ -99,10 +99,10 @@ importers:
 
   packages/encoder:
     dependencies:
-      "@agentwire/core":
+      "@ag-ui/core":
         specifier: workspace:*
         version: link:../core
-      "@agentwire/proto":
+      "@ag-ui/proto":
         specifier: workspace:*
         version: link:../proto
     devDependencies:
@@ -124,7 +124,7 @@ importers:
 
   packages/proto:
     dependencies:
-      "@agentwire/core":
+      "@ag-ui/core":
         specifier: workspace:*
         version: link:../core
       "@bufbuild/protobuf":

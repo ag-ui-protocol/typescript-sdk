@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package agentwire;
+package ag_ui;
 
 message ToolCall {
   string id = 1;

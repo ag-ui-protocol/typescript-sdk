@@ -12,12 +12,12 @@ import {
   CustomEvent,
   BaseEvent,
   AssistantMessage,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { mergeMap } from "rxjs/operators";
 import { structuredClone_ } from "../utils";
 import { applyPatch } from "fast-json-patch";
 import untruncateJson from "untruncate-json";
-import { AgentState } from "@agentwire/core";
+import { AgentState } from "@ag-ui/core";
 import { Observable } from "rxjs";
 
 interface PredictStateValue {

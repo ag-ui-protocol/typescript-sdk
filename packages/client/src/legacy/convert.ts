@@ -17,7 +17,7 @@ import {
   StateDeltaEvent,
   MessagesSnapshotEvent,
   ToolCall,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { Observable } from "rxjs";
 import {
   LegacyTextMessageStart,

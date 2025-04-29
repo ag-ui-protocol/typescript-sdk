@@ -7,7 +7,7 @@ import {
   ToolCallStartEvent,
   ToolCallArgsEvent,
   ToolCallEndEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { LegacyRuntimeProtocolEvent } from "../types";
 
 describe("convertToLegacyEvents - Tool Call Sequences", () => {

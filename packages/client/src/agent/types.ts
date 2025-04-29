@@ -1,4 +1,4 @@
-import { Message, RunAgentInput, State } from "@agentwire/core";
+import { Message, RunAgentInput, State } from "@ag-ui/core";
 
 export interface AgentConfig {
   agentId?: string;

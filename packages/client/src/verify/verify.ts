@@ -1,4 +1,4 @@
-import { BaseEvent, EventType, AgentWireError } from "@agentwire/core";
+import { BaseEvent, EventType, AGUIError } from "@ag-ui/core";
 import { Observable, throwError, of } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 
@@ -22,7 +22,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
       if (runError) {
         return throwError(
           () =>
-            new AgentWireError(
+            new AGUIError(
               `Cannot send event type '${eventType}': The run has already errored with 'RUN_ERROR'. No further events can be sent.`,
             ),
         );
@@ -32,7 +32,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
       if (runFinished && eventType !== EventType.RUN_ERROR) {
         return throwError(
           () =>
-            new AgentWireError(
+            new AGUIError(
               `Cannot send event type '${eventType}': The run has already finished with 'RUN_FINISHED'. Start a new run with 'RUN_STARTED'.`,
             ),
         );
@@ -51,7 +51,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
         if (!allowedEventTypes.includes(eventType)) {
           return throwError(
             () =>
-              new AgentWireError(
+              new AGUIError(
                 `Cannot send event type '${eventType}' after 'TEXT_MESSAGE_START': Send 'TEXT_MESSAGE_END' first.`,
               ),
           );
@@ -73,7 +73,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (eventType === EventType.TOOL_CALL_START) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_START' event: A tool call is already in progress. Complete it with 'TOOL_CALL_END' first.`,
                 ),
             );
@@ -81,7 +81,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
 
           return throwError(
             () =>
-              new AgentWireError(
+              new AGUIError(
                 `Cannot send event type '${eventType}' after 'TOOL_CALL_START': Send 'TOOL_CALL_END' first.`,
               ),
           );
@@ -92,13 +92,13 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
       if (!firstEventReceived) {
         firstEventReceived = true;
         if (eventType !== EventType.RUN_STARTED && eventType !== EventType.RUN_ERROR) {
-          return throwError(() => new AgentWireError(`First event must be 'RUN_STARTED'`));
+          return throwError(() => new AGUIError(`First event must be 'RUN_STARTED'`));
         }
       } else if (eventType === EventType.RUN_STARTED) {
         // Prevent multiple RUN_STARTED events
         return throwError(
           () =>
-            new AgentWireError(
+            new AGUIError(
               `Cannot send multiple 'RUN_STARTED' events: A 'RUN_STARTED' event was already sent. Each run must have exactly one 'RUN_STARTED' event at the beginning.`,
             ),
         );
@@ -112,7 +112,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeMessageId !== undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TEXT_MESSAGE_START' event: A text message is already in progress. Complete it with 'TEXT_MESSAGE_END' first.`,
                 ),
             );
@@ -127,7 +127,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeMessageId === undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TEXT_MESSAGE_CONTENT' event: No active text message found. Start a text message with 'TEXT_MESSAGE_START' first.`,
                 ),
             );
@@ -136,7 +136,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if ((event as any).messageId !== activeMessageId) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TEXT_MESSAGE_CONTENT' event: Message ID mismatch. The ID '${(event as any).messageId}' doesn't match the active message ID '${activeMessageId}'.`,
                 ),
             );
@@ -150,7 +150,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeMessageId === undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TEXT_MESSAGE_END' event: No active text message found. A 'TEXT_MESSAGE_START' event must be sent first.`,
                 ),
             );
@@ -159,7 +159,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if ((event as any).messageId !== activeMessageId) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TEXT_MESSAGE_END' event: Message ID mismatch. The ID '${(event as any).messageId}' doesn't match the active message ID '${activeMessageId}'.`,
                 ),
             );
@@ -176,7 +176,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeToolCallId !== undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_START' event: A tool call is already in progress. Complete it with 'TOOL_CALL_END' first.`,
                 ),
             );
@@ -191,7 +191,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeToolCallId === undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_ARGS' event: No active tool call found. Start a tool call with 'TOOL_CALL_START' first.`,
                 ),
             );
@@ -200,7 +200,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if ((event as any).toolCallId !== activeToolCallId) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_ARGS' event: Tool call ID mismatch. The ID '${(event as any).toolCallId}' doesn't match the active tool call ID '${activeToolCallId}'.`,
                 ),
             );
@@ -214,7 +214,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (activeToolCallId === undefined) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_END' event: No active tool call found. A 'TOOL_CALL_START' event must be sent first.`,
                 ),
             );
@@ -223,7 +223,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if ((event as any).toolCallId !== activeToolCallId) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'TOOL_CALL_END' event: Tool call ID mismatch. The ID '${(event as any).toolCallId}' doesn't match the active tool call ID '${activeToolCallId}'.`,
                 ),
             );
@@ -239,7 +239,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           const stepName = (event as any).name;
           if (activeSteps.has(stepName)) {
             return throwError(
-              () => new AgentWireError(`Step "${stepName}" is already active for 'STEP_STARTED'`),
+              () => new AGUIError(`Step "${stepName}" is already active for 'STEP_STARTED'`),
             );
           }
           activeSteps.set(stepName, true);
@@ -251,7 +251,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
           if (!activeSteps.has(stepName)) {
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'STEP_FINISHED' for step "${stepName}" that was not started`,
                 ),
             );
@@ -275,7 +275,7 @@ export const verifyEvents = (source$: Observable<BaseEvent>): Observable<BaseEve
             const unfinishedSteps = Array.from(activeSteps.keys()).join(", ");
             return throwError(
               () =>
-                new AgentWireError(
+                new AGUIError(
                   `Cannot send 'RUN_FINISHED' while steps are still active: ${unfinishedSteps}`,
                 ),
             );

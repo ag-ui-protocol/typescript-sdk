@@ -6,17 +6,17 @@ import {
   TextMessageContentEvent,
   StateDeltaEvent,
   MessagesSnapshotEvent,
-} from "@agentwire/core";
-import * as proto from "@agentwire/proto";
+} from "@ag-ui/core";
+import * as proto from "@ag-ui/proto";
 import { transformHttpEventStream } from "../http";
-import * as encoder from "@agentwire/encoder";
+import * as encoder from "@ag-ui/encoder";
 
 const eventEncoder = new encoder.EventEncoder({
-  accept: proto.AGENTWIRE_MEDIA_TYPE,
+  accept: proto.AGUI_MEDIA_TYPE,
 });
 
 // Don't mock the proto package so we can use real encoding/decoding
-jest.unmock("@agentwire/proto");
+jest.unmock("@ag-ui/proto");
 
 describe("parseProtoStream", () => {
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,
@@ -97,7 +97,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,
@@ -163,7 +163,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,
@@ -245,7 +245,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,
@@ -287,7 +287,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,
@@ -358,7 +358,7 @@ describe("parseProtoStream", () => {
 
     // Send headers event first with protobuf content type
     const headers = new Headers();
-    headers.append("Content-Type", proto.AGENTWIRE_MEDIA_TYPE);
+    headers.append("Content-Type", proto.AGUI_MEDIA_TYPE);
 
     chunk$.next({
       type: HttpEventType.HEADERS,

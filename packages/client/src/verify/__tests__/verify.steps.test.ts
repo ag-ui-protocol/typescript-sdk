@@ -5,13 +5,13 @@ import { verifyEvents } from "../verify";
 import {
   BaseEvent,
   EventType,
-  AgentWireError,
+  AGUIError,
   RunStartedEvent,
   RunFinishedEvent,
   RunErrorEvent,
   StepStartedEvent,
   StepFinishedEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 
 describe("verifyEvents steps", () => {
   // Test: STEP_FINISHED must have matching name with STEP_STARTED
@@ -23,7 +23,7 @@ describe("verifyEvents steps", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'STEP_FINISHED' for step "different-name" that was not started`,
         );
@@ -66,7 +66,7 @@ describe("verifyEvents steps", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'STEP_FINISHED' for step "undefined" that was not started`,
         );
@@ -105,7 +105,7 @@ describe("verifyEvents steps", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(`Step "undefined" is already active for 'STEP_STARTED'`);
         subscription.unsubscribe();
       },
@@ -146,7 +146,7 @@ describe("verifyEvents steps", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(`Cannot send 'RUN_FINISHED' while steps are still active`);
         subscription.unsubscribe();
       },

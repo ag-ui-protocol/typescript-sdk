@@ -1,4 +1,4 @@
-import { BaseEvent } from "@agentwire/core";
+import { BaseEvent } from "@ag-ui/core";
 import { encode, decode } from "../src/proto";
 import { expect, describe, it } from "@jest/globals";
 

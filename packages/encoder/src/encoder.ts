@@ -1,5 +1,5 @@
-import { BaseEvent } from "@agentwire/core";
-import * as proto from "@agentwire/proto";
+import { BaseEvent } from "@ag-ui/core";
+import * as proto from "@ag-ui/proto";
 import { preferredMediaTypes } from "./media-type";
 
 export interface EventEncoderParams {
@@ -15,7 +15,7 @@ export class EventEncoder {
 
   getContentType(): string {
     if (this.acceptsProtobuf) {
-      return proto.AGENTWIRE_MEDIA_TYPE;
+      return proto.AGUI_MEDIA_TYPE;
     } else {
       return "text/event-stream";
     }
@@ -61,9 +61,9 @@ export class EventEncoder {
 
   private isProtobufAccepted(acceptHeader: string): boolean {
     // Pass the Accept header and an array with your media type
-    const preferred = preferredMediaTypes(acceptHeader, [proto.AGENTWIRE_MEDIA_TYPE]);
+    const preferred = preferredMediaTypes(acceptHeader, [proto.AGUI_MEDIA_TYPE]);
 
     // If the returned array includes your media type, it's acceptable
-    return preferred.includes(proto.AGENTWIRE_MEDIA_TYPE);
+    return preferred.includes(proto.AGUI_MEDIA_TYPE);
   }
 }

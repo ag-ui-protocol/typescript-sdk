@@ -5,7 +5,7 @@ import { verifyEvents } from "../verify";
 import {
   BaseEvent,
   EventType,
-  AgentWireError,
+  AGUIError,
   RunStartedEvent,
   RunFinishedEvent,
   RunErrorEvent,
@@ -22,7 +22,7 @@ import {
   StateSnapshotEvent,
   StateDeltaEvent,
   MessagesSnapshotEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 
 describe("verifyEvents general validation", () => {
   // Test: Event IDs must match their parent events (e.g. TEXT_MESSAGE_CONTENT must have same ID as TEXT_MESSAGE_START)
@@ -34,7 +34,7 @@ describe("verifyEvents general validation", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TEXT_MESSAGE_CONTENT' event: Message ID mismatch. The ID 'different-id' doesn't match the active message ID 'msg1'.`,
         );
@@ -78,7 +78,7 @@ describe("verifyEvents general validation", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TEXT_MESSAGE_END' event: No active text message found. A 'TEXT_MESSAGE_START' event must be sent first.`,
         );
@@ -117,7 +117,7 @@ describe("verifyEvents general validation", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TOOL_CALL_ARGS' event: Tool call ID mismatch. The ID 'different-id' doesn't match the active tool call ID 't1'.`,
         );
@@ -162,7 +162,7 @@ describe("verifyEvents general validation", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TOOL_CALL_END' event: No active tool call found. A 'TOOL_CALL_START' event must be sent first.`,
         );
@@ -397,7 +397,7 @@ describe("verifyEvents events", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TEXT_MESSAGE_CONTENT' event: Message ID mismatch. The ID 'different-id' doesn't match the active message ID 'msg1'.`,
         );
@@ -441,7 +441,7 @@ describe("verifyEvents events", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TEXT_MESSAGE_END' event: No active text message found. A 'TEXT_MESSAGE_START' event must be sent first.`,
         );
@@ -480,7 +480,7 @@ describe("verifyEvents events", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TOOL_CALL_ARGS' event: Tool call ID mismatch. The ID 'different-id' doesn't match the active tool call ID 't1'.`,
         );
@@ -525,7 +525,7 @@ describe("verifyEvents events", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TOOL_CALL_END' event: No active tool call found. A 'TOOL_CALL_START' event must be sent first.`,
         );

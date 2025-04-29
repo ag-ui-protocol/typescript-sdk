@@ -5,7 +5,7 @@ import { verifyEvents } from "../verify";
 import {
   BaseEvent,
   EventType,
-  AgentWireError,
+  AGUIError,
   TextMessageStartEvent,
   TextMessageContentEvent,
   TextMessageEndEvent,
@@ -17,7 +17,7 @@ import {
   ToolCallEndEvent,
   StepStartedEvent,
   StepFinishedEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 
 describe("verifyEvents lifecycle", () => {
   // Test: RUN_STARTED must be the first event
@@ -25,7 +25,7 @@ describe("verifyEvents lifecycle", () => {
     const source$ = new Subject<BaseEvent>();
     const result$ = verifyEvents(source$).pipe(
       catchError((err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain("First event must be 'RUN_STARTED'");
         throw err;
       }),
@@ -45,7 +45,7 @@ describe("verifyEvents lifecycle", () => {
 
     // Await the promise and expect it to be an error
     const result = await promise;
-    expect(result).toBeInstanceOf(AgentWireError);
+    expect(result).toBeInstanceOf(AGUIError);
   });
 
   // Test: Multiple RUN_STARTED events are not allowed
@@ -57,7 +57,7 @@ describe("verifyEvents lifecycle", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain("Cannot send multiple 'RUN_STARTED' events");
         subscription.unsubscribe();
       },
@@ -95,7 +95,7 @@ describe("verifyEvents lifecycle", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send event type 'TEXT_MESSAGE_START': The run has already finished with 'RUN_FINISHED'",
         );
@@ -221,7 +221,7 @@ describe("verifyEvents lifecycle", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send event type 'TEXT_MESSAGE_START': The run has already errored with 'RUN_ERROR'. No further events can be sent.",
         );

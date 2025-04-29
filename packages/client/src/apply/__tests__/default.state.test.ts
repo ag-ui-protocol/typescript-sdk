@@ -1,5 +1,5 @@
 import { defaultApplyEvents } from "../default";
-import { EventType, StateDeltaEvent, AgentState } from "@agentwire/core";
+import { EventType, StateDeltaEvent, AgentState } from "@ag-ui/core";
 import { of } from "rxjs";
 
 // Define the exact type expected by defaultApplyEvents

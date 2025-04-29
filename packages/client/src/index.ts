@@ -4,4 +4,4 @@ export * from "./transform";
 export * from "./run";
 export * from "./legacy";
 export * from "./agent";
-export * from "@agentwire/core";
+export * from "@ag-ui/core";

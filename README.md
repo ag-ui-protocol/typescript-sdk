@@ -1,1 +1,1 @@
-# Agent Wire Protocol
+# Agent User Interaction Protocol

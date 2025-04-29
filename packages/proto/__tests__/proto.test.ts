@@ -5,7 +5,7 @@ import {
   StateDeltaEvent,
   ToolCallStartEvent,
   MessagesSnapshotEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { describe, it, expect } from "@jest/globals";
 import * as protoEvents from "../src/generated/events";
 

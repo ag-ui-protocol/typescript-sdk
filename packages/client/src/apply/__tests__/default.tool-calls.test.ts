@@ -9,7 +9,7 @@ import {
   ToolCallStartEvent,
   ToolCallArgsEvent,
   ToolCallEndEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 import { defaultApplyEvents } from "../default";
 
 describe("defaultApplyEvents with tool calls", () => {

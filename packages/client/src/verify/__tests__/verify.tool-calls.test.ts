@@ -5,7 +5,7 @@ import { verifyEvents } from "../verify";
 import {
   BaseEvent,
   EventType,
-  AgentWireError,
+  AGUIError,
   RunStartedEvent,
   RunFinishedEvent,
   RunErrorEvent,
@@ -22,7 +22,7 @@ import {
   StateSnapshotEvent,
   StateDeltaEvent,
   MessagesSnapshotEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 
 describe("verifyEvents tool calls", () => {
   // Test: Cannot send lifecycle events inside a tool call
@@ -34,7 +34,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STEP_STARTED' after 'TOOL_CALL_START'`,
         );
@@ -78,7 +78,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'TEXT_MESSAGE_START' after 'TOOL_CALL_START'`,
         );
@@ -122,7 +122,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send 'TOOL_CALL_START' event: A tool call is already in progress`,
         );
@@ -276,7 +276,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(`Cannot send event type 'CUSTOM' after 'TOOL_CALL_START'`);
         subscription.unsubscribe();
       },
@@ -319,7 +319,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STATE_SNAPSHOT' after 'TOOL_CALL_START'`,
         );
@@ -363,7 +363,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STATE_DELTA' after 'TOOL_CALL_START'`,
         );
@@ -407,7 +407,7 @@ describe("verifyEvents tool calls", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'MESSAGES_SNAPSHOT' after 'TOOL_CALL_START'`,
         );

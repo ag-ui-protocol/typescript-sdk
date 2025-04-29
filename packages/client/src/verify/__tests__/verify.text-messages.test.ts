@@ -5,7 +5,7 @@ import { verifyEvents } from "../verify";
 import {
   BaseEvent,
   EventType,
-  AgentWireError,
+  AGUIError,
   RunStartedEvent,
   RunFinishedEvent,
   RunErrorEvent,
@@ -22,7 +22,7 @@ import {
   StateSnapshotEvent,
   StateDeltaEvent,
   MessagesSnapshotEvent,
-} from "@agentwire/core";
+} from "@ag-ui/core";
 
 describe("verifyEvents text messages", () => {
   // Test: Cannot send lifecycle events inside a text message
@@ -34,7 +34,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STEP_STARTED' after 'TEXT_MESSAGE_START'`,
         );
@@ -77,7 +77,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'TOOL_CALL_START' after 'TEXT_MESSAGE_START'`,
         );
@@ -228,7 +228,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(`Cannot send event type 'CUSTOM' after 'TEXT_MESSAGE_START'`);
         subscription.unsubscribe();
       },
@@ -270,7 +270,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STATE_SNAPSHOT' after 'TEXT_MESSAGE_START'`,
         );
@@ -313,7 +313,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'STATE_DELTA' after 'TEXT_MESSAGE_START'`,
         );
@@ -356,7 +356,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'MESSAGES_SNAPSHOT' after 'TEXT_MESSAGE_START'`,
         );
@@ -399,7 +399,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           `Cannot send event type 'RUN_FINISHED' after 'TEXT_MESSAGE_START'`,
         );
@@ -439,7 +439,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send event type 'RUN_FINISHED' after 'TEXT_MESSAGE_START': Send 'TEXT_MESSAGE_END' first.",
         );
@@ -484,7 +484,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send event type 'TEXT_MESSAGE_START' after 'TEXT_MESSAGE_START': Send 'TEXT_MESSAGE_END' first.",
         );
@@ -527,7 +527,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send 'TEXT_MESSAGE_CONTENT' event: Message ID mismatch. The ID '2' doesn't match the active message ID '1'.",
         );
@@ -571,7 +571,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send 'TEXT_MESSAGE_CONTENT' event: No active text message found. Start a text message with 'TEXT_MESSAGE_START' first.",
         );
@@ -611,7 +611,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain(
           "Cannot send 'TEXT_MESSAGE_END' event: No active text message found. A 'TEXT_MESSAGE_START' event must be sent first.",
         );
@@ -650,7 +650,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain("First event must be 'RUN_STARTED'");
         subscription.unsubscribe();
       },
@@ -679,7 +679,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain("Cannot send 'TEXT_MESSAGE_END' event: Message ID mismatch");
         subscription.unsubscribe();
       },
@@ -767,7 +767,7 @@ describe("verifyEvents text messages", () => {
     const subscription = verifyEvents(source$).subscribe({
       next: (event) => events.push(event),
       error: (err) => {
-        expect(err).toBeInstanceOf(AgentWireError);
+        expect(err).toBeInstanceOf(AGUIError);
         expect(err.message).toContain("requires a valid message ID");
         subscription.unsubscribe();
       },

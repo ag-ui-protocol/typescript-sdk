@@ -1,14 +1,8 @@
 {
   "version": "0.2",
   "language": "en",
-  "words": ["agentwire", "uuidv4", "untruncate"],
-  "ignorePaths": [
-    "node_modules/**",
-    "dist/**",
-    "build/**",
-    ".git/**",
-    "coverage/**"
-  ],
+  "words": ["ag-ui", "uuidv4", "untruncate"],
+  "ignorePaths": ["node_modules/**", "dist/**", "build/**", ".git/**", "coverage/**"],
   "allowCompoundWords": true,
   "ignoreRegExpList": ["\\([^)]*\\)", "`[^`]*`", "'[^']*'", "\"[^\"]*\""]
 }

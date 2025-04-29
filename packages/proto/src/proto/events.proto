@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package agentwire;
+package ag_ui;
 
 import "google/protobuf/struct.proto";
 import "patch.proto";

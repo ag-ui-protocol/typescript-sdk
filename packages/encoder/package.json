@@ -1,5 +1,5 @@
 {
-  "name": "@agentwire/encoder",
+  "name": "@ag-ui/encoder",
   "author": "Markus Ecker <markus.ecker@gmail.com>",
   "version": "0.0.27",
   "private": false,
@@ -19,8 +19,8 @@
     "unlink:global": "pnpm unlink --global"
   },
   "dependencies": {
-    "@agentwire/core": "workspace:*",
-    "@agentwire/proto": "workspace:*"
+    "@ag-ui/core": "workspace:*",
+    "@ag-ui/proto": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

@@ -1,7 +1,7 @@
 import { AbstractAgent } from "./agent";
 import { runHttpRequest, HttpEvent } from "@/run/http-request";
 import { HttpAgentConfig, RunAgentParameters } from "./types";
-import { RunAgent, RunAgentInput, BaseEvent } from "@agentwire/core";
+import { RunAgent, RunAgentInput, BaseEvent } from "@ag-ui/core";
 import { structuredClone_ } from "@/utils";
 import { transformHttpEventStream } from "@/transform/http";
 import { Observable } from "rxjs";

@@ -1,4 +1,4 @@
-import { BaseEvent, EventSchemas, EventType, Message } from "@agentwire/core";
+import { BaseEvent, EventSchemas, EventType, Message } from "@ag-ui/core";
 import * as protoEvents from "./generated/events";
 import * as protoPatch from "./generated/patch";
 

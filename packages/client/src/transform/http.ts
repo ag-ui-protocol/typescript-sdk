@@ -1,9 +1,9 @@
-import { BaseEvent, EventSchemas } from "@agentwire/core";
+import { BaseEvent, EventSchemas } from "@ag-ui/core";
 import { Subject, ReplaySubject, Observable } from "rxjs";
 import { HttpEvent, HttpEventType } from "../run/http-request";
 import { parseSSEStream } from "./sse";
 import { parseProtoStream } from "./proto";
-import * as proto from "@agentwire/proto";
+import * as proto from "@ag-ui/proto";
 
 /**
  * Transforms HTTP events into BaseEvents using the appropriate format parser based on content type.
@@ -29,7 +29,7 @@ export const transformHttpEventStream = (source$: Observable<HttpEvent>): Observ
         const contentType = event.headers.get("content-type");
 
         // Choose parser based on content type
-        if (contentType === proto.AGENTWIRE_MEDIA_TYPE) {
+        if (contentType === proto.AGUI_MEDIA_TYPE) {
           // Use protocol buffer parser
           parseProtoStream(bufferSubject).subscribe({
             next: (event) => eventSubject.next(event),

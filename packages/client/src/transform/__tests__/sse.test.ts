@@ -2,7 +2,7 @@ import { Subject } from "rxjs";
 import { firstValueFrom } from "rxjs";
 import { take } from "rxjs/operators";
 import { transformHttpEventStream } from "../http";
-import { EventType } from "@agentwire/core";
+import { EventType } from "@ag-ui/core";
 import { HttpEvent, HttpEventType } from "../../run/http-request";
 
 describe("transformHttpEventStream", () => {

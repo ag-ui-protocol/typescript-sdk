@@ -1,5 +1,5 @@
 {
-  "name": "@agentwire/proto",
+  "name": "@ag-ui/proto",
   "author": "Markus Ecker <markus.ecker@gmail.com>",
   "version": "0.0.27",
   "private": false,
@@ -20,7 +20,7 @@
     "unlink:global": "pnpm unlink --global"
   },
   "dependencies": {
-    "@agentwire/core": "workspace:*",
+    "@ag-ui/core": "workspace:*",
     "@bufbuild/protobuf": "^2.2.5"
   },
   "devDependencies": {

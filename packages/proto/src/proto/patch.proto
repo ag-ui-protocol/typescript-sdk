@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/struct.proto";
 
-package agentwire;
+package ag_ui;
 
 enum JsonPatchOperationType {
   ADD = 0;
